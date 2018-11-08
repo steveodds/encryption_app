@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Blend for Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption App", "Encryption App\Encryption App.csproj", "{22051AEE-A7D4-461D-AE2D-1F29748D9FDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22051AEE-A7D4-461D-AE2D-1F29748D9FDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22051AEE-A7D4-461D-AE2D-1F29748D9FDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22051AEE-A7D4-461D-AE2D-1F29748D9FDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22051AEE-A7D4-461D-AE2D-1F29748D9FDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDD771C6-1914-4CA0-8D29-F653E290C2AE}
+	EndGlobalSection
+EndGlobal
