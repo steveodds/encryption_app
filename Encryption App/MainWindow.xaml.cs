@@ -82,7 +82,7 @@ namespace Encryption_App
             FinalEncrypt = Encrypt.EncryptString(TextEncrypt, keyphrase);
             txtTarget.Text = String.Empty;
             txtTarget.Text = FinalEncrypt;
-            System.Windows.Clipboard.SetText(FinalEncrypt);
+            System.Windows.Clipboard.SetDataObject(FinalEncrypt);
             MessageBox.Show("The encrypted text has been generated and copied to the clipboard.","Success!",MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -99,7 +99,7 @@ namespace Encryption_App
             DecryptedText = Encrypt.DecryptString(EncryptedText, keyphrase);
             txtTarget.Text = String.Empty;
             txtTarget.Text = DecryptedText;
-            Clipboard.SetText(DecryptedText);
+            Clipboard.SetDataObject(DecryptedText);
             MessageBox.Show("The text has been decrypted and copied to the clipboard.", "Success!", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }

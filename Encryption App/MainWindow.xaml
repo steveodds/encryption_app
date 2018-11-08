@@ -10,13 +10,10 @@
         <Label Content="Encryption App" Height="56" Margin="47.918,12,47.918,0" VerticalAlignment="Top" FontSize="36" FontFamily="Segoe UI Light" Foreground="White" HorizontalAlignment="Center"/>
         <TextBlock Height="22" Margin="47.918,73,47.918,0" TextWrapping="Wrap" Text="Enter the text you want to encrypt:" VerticalAlignment="Top" FontSize="16" Foreground="Gainsboro" HorizontalAlignment="Center"/>
         <TextBox Margin="47.918,124,47.918,150" TextWrapping="Wrap" Background="{x:Null}" Foreground="White" BorderThickness="0.7" x:Name="txtTarget"/>
-        <Button Content="Encrypt" VerticalAlignment="Bottom" Margin="47.918,0,47.918,80.04" Height="40.96" FontSize="20" IsDefault="True" Foreground="White" Click="Button_Click" AutomationProperties.Name="btnEncryptText" Background="#FF1B1B1B">
-        
-            
-        
+        <Button Content="Encrypt" VerticalAlignment="Bottom" Margin="47.918,0,47.918,80.04" Height="40.96" FontSize="20" IsDefault="True" Foreground="White" Click="Button_Click" AutomationProperties.Name="btnEncryptText" Background="#FF1B1B1B" Style="{DynamicResource ButtonStyle1}">
         </Button>
-        <Button Content="Decrypt" VerticalAlignment="Bottom" Margin="47.918,0,47.918,25.04" Height="40.96" FontSize="20" IsDefault="True" Foreground="White" Click="Button_Click_2" Background="#FF1B1B1B"/>
-        <Button Content="" HorizontalAlignment="Left" Height="20" Margin="320,10,0,0" VerticalAlignment="Top" Width="20" Foreground="{x:Null}" BorderBrush="{x:Null}" FocusVisualStyle="{DynamicResource DisableCustomFocus}" Click="Button_Click_1">
+        <Button Content="Decrypt" VerticalAlignment="Bottom" Margin="47.918,0,47.918,25.04" Height="40.96" FontSize="20" IsDefault="True" Foreground="White" Click="Button_Click_2" Background="#FF1B1B1B" Style="{DynamicResource ButtonStyle1}"/>
+        <Button Content="" HorizontalAlignment="Left" Height="20" Margin="320,10,0,0" VerticalAlignment="Top" Width="20" Foreground="{x:Null}" BorderBrush="{x:Null}" FocusVisualStyle="{DynamicResource DisableCustomFocus}" Click="Button_Click_1" Style="{DynamicResource ButtonStyle1}">
             <Button.Background>
                 <ImageBrush ImageSource="Very-Basic-Close-icon.png"/>
             </Button.Background>
