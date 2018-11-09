@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Security.Cryptography;
 using System.IO;
-using Microsoft.VisualBasic;
 
 namespace Encryption_App
 {
@@ -101,6 +100,13 @@ namespace Encryption_App
             txtTarget.Text = DecryptedText;
             Clipboard.SetDataObject(DecryptedText);
             MessageBox.Show("The text has been decrypted and copied to the clipboard.", "Success!", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            Launcher launcher = new Launcher();
+            launcher.Show();
+            this.Hide();
         }
     }
 }

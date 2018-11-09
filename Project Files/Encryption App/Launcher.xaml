@@ -1,0 +1,17 @@
+﻿<Window x:Class="Encryption_App.Launcher"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Encryption_App"
+        mc:Ignorable="d"
+        Title="Launcher" Height="335.295" Width="350" WindowStyle="None" Background="#FF1B1B1B" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Label Content="Encryption App" Height="56" Margin="56.021,12,43.96,0" VerticalAlignment="Top" FontSize="36" FontFamily="Segoe UI Light" Foreground="White" HorizontalAlignment="Center" Width="242.019"/>
+        <TextBlock Height="22" Margin="53.118,73,45.118,0" TextWrapping="Wrap" Text="Select an option below:" VerticalAlignment="Top" FontSize="16" Foreground="Gainsboro" HorizontalAlignment="Center"/>
+        <Button x:Name="btnTextEncrypt" Content="Encrypt Text" VerticalAlignment="Bottom" Margin="56,0,44,149" Height="41" FontSize="20" IsDefault="True" Foreground="White"  Background="#FF1B1B1B" Style="{DynamicResource ButtonStyle1}" Click="btnTextEncrypt_Click"/>
+        <Button x:Name="txtFilesEncrypt" Content="Encrypt Files" VerticalAlignment="Bottom" Margin="56,0,44,84" Height="41" FontSize="20" IsDefault="True" Foreground="White"  Background="#FF1B1B1B" Style="{DynamicResource ButtonStyle1}" Click="txtFilesEncrypt_Click"/>
+        <Button x:Name="btnExitApp" Content="Exit" VerticalAlignment="Bottom" Margin="56,0,44,20" Height="41" FontSize="20" IsDefault="True" Foreground="White"  Background="#FF1B1B1B" Style="{DynamicResource ButtonStyle1}" Click="btnExitApp_Click"/>
+
+    </Grid>
+</Window>
