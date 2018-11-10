@@ -40,6 +40,9 @@ namespace Encryption_App
         // private/public key value pair.
         const string keyName = "Key01";
 
+        //Other stuff
+        public string ext = ""; 
+
 
         public FileEncryptor()
         {
@@ -160,7 +163,7 @@ namespace Encryption_App
             byte[] LenIV = new byte[4];
 
             // Consruct the file name for the decrypted file.
-            string outFile = DecrFolder + inFile.Substring(0, inFile.LastIndexOf(".")) + ".txt";
+            string outFile = DecrFolder + inFile.Substring(0, inFile.LastIndexOf(".")) + ext;
 
             // Use FileStream objects to read the encrypted
             // file (inFs) and save the decrypted file (outFs).
@@ -266,7 +269,10 @@ namespace Encryption_App
                         FileInfo fInfo = new FileInfo(fName);
                         // Pass the file name without the path.
                         string name = fInfo.FullName;
+                        ext = System.IO.Path.GetExtension(fName);
                         EncryptFile(name);
+                        System.Windows.MessageBox.Show("The file has been successfully encrypted!");
+                        System.Diagnostics.Process.Start(EncrFolder);
                     }
                 }
             }
@@ -275,7 +281,7 @@ namespace Encryption_App
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (rsa == null)
-                System.Windows.MessageBox.Show("Key not set.");
+                System.Windows.MessageBox.Show("Key not set. Click 'Create Keys'.");
             else
             {
                 // Display a dialog box to select the encrypted file.
@@ -289,6 +295,8 @@ namespace Encryption_App
                         FileInfo fi = new FileInfo(fName);
                         string name = fi.Name;
                         DecryptFile(name);
+                        System.Windows.MessageBox.Show("The file has been successfully decrypted!");
+                        System.Diagnostics.Process.Start(DecrFolder);
                     }
                 }
             }
