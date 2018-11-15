@@ -40,6 +40,9 @@ namespace Encryption_App
         // private/public key value pair.
         const string keyName = "Key01";
 
+        //Grab file ext
+        public string ext = ""; 
+
 
         public FileEncryptor()
         {
@@ -62,22 +65,17 @@ namespace Encryption_App
         private void EncryptFile(string inFile)
         {
 
-            // Create instance of Rijndael for
-            // symetric encryption of the data.
+            // Rijndael call
             RijndaelManaged rjndl = new RijndaelManaged();
             rjndl.KeySize = 256;
             rjndl.BlockSize = 256;
             rjndl.Mode = CipherMode.CBC;
             ICryptoTransform transform = rjndl.CreateEncryptor();
 
-            // Use RSACryptoServiceProvider to
-            // enrypt the Rijndael key.
-            // rsa is previously instantiated: 
-            //    rsa = new RSACryptoServiceProvider(cspp);
+            // Encrypt Rijndael key
             byte[] keyEncrypted = rsa.Encrypt(rjndl.Key, false);
 
-            // Create byte arrays to contain
-            // the length values of the key and IV.
+            // Create byte arrays to contain the length values of the key and IV.
             byte[] LenK = new byte[4];
             byte[] LenIV = new byte[4];
 
@@ -86,16 +84,9 @@ namespace Encryption_App
             int lIV = rjndl.IV.Length;
             LenIV = BitConverter.GetBytes(lIV);
 
-            // Write the following to the FileStream
-            // for the encrypted file (outFs):
-            // - length of the key
-            // - length of the IV
-            // - ecrypted key
-            // - the IV
-            // - the encrypted cipher content
+            // Write to the FileStream
 
             int startFileName = inFile.LastIndexOf("\\") + 1;
-            // Change the file's extension to ".enc"
             string outFile = EncrFolder + inFile.Substring(startFileName, inFile.LastIndexOf(".") - startFileName) + ".enc";
 
             using (FileStream outFs = new FileStream(outFile, FileMode.Create))
@@ -106,18 +97,13 @@ namespace Encryption_App
                 outFs.Write(keyEncrypted, 0, lKey);
                 outFs.Write(rjndl.IV, 0, lIV);
 
-                // Now write the cipher text using
-                // a CryptoStream for encrypting.
+                // Writes ciphertext
                 using (CryptoStream outStreamEncrypted = new CryptoStream(outFs, transform, CryptoStreamMode.Write))
                 {
 
-                    // By encrypting a chunk at
-                    // a time, you can save memory
-                    // and accommodate large files.
+                    // Chunk by chunk for efficiency
                     int count = 0;
                     int offset = 0;
-
-                    // blockSizeBytes can be any arbitrary size.
                     int blockSizeBytes = rjndl.BlockSize / 8;
                     byte[] data = new byte[blockSizeBytes];
                     int bytesRead = 0;
@@ -145,25 +131,19 @@ namespace Encryption_App
         private void DecryptFile(string inFile)
         {
 
-            // Create instance of Rijndael for
-            // symetric decryption of the data.
             RijndaelManaged rjndl = new RijndaelManaged();
             rjndl.KeySize = 256;
             rjndl.BlockSize = 256;
             rjndl.Mode = CipherMode.CBC;
 
-            // Create byte arrays to get the length of
-            // the encrypted key and IV.
-            // These values were stored as 4 bytes each
-            // at the beginning of the encrypted package.
+            //Byte array? -yes
             byte[] LenK = new byte[4];
             byte[] LenIV = new byte[4];
 
-            // Consruct the file name for the decrypted file.
-            string outFile = DecrFolder + inFile.Substring(0, inFile.LastIndexOf(".")) + ".txt";
+            // Recreate file (check how to check extension)
+            string outFile = DecrFolder + inFile.Substring(0, inFile.LastIndexOf(".")) + ext;
 
-            // Use FileStream objects to read the encrypted
-            // file (inFs) and save the decrypted file (outFs).
+            // Write as file is being read.
             using (FileStream inFs = new FileStream(EncrFolder + inFile, FileMode.Open))
             {
 
@@ -173,58 +153,38 @@ namespace Encryption_App
                 inFs.Seek(4, SeekOrigin.Begin);
                 inFs.Read(LenIV, 0, 3);
 
-                // Convert the lengths to integer values.
                 int lenK = BitConverter.ToInt32(LenK, 0);
                 int lenIV = BitConverter.ToInt32(LenIV, 0);
 
-                // Determine the start postition of
-                // the ciphter text (startC)
-                // and its length(lenC).
+                // Get ciphertext start pos. and length
                 int startC = lenK + lenIV + 8;
                 int lenC = (int)inFs.Length - startC;
 
-                // Create the byte arrays for
-                // the encrypted Rijndael key,
-                // the IV, and the cipher text.
                 byte[] KeyEncrypted = new byte[lenK];
                 byte[] IV = new byte[lenIV];
 
-                // Extract the key and IV
-                // starting from index 8
-                // after the length values.
+                // Get key
                 inFs.Seek(8, SeekOrigin.Begin);
                 inFs.Read(KeyEncrypted, 0, lenK);
                 inFs.Seek(8 + lenK, SeekOrigin.Begin);
                 inFs.Read(IV, 0, lenIV);
                 Directory.CreateDirectory(DecrFolder);
-                // Use RSACryptoServiceProvider
-                // to decrypt the Rijndael key.
-                byte[] KeyDecrypted = rsa.Decrypt(KeyEncrypted, false);
 
-                // Decrypt the key.
+                // Decrypt key (remove manual code and use .NET libraries
+                byte[] KeyDecrypted = rsa.Decrypt(KeyEncrypted, false);
                 ICryptoTransform transform = rjndl.CreateDecryptor(KeyDecrypted, IV);
 
-                // Decrypt the cipher text from
-                // from the FileSteam of the encrypted
-                // file (inFs) into the FileStream
-                // for the decrypted file (outFs).
                 using (FileStream outFs = new FileStream(outFile, FileMode.Create))
                 {
 
                     int count = 0;
                     int offset = 0;
 
-                    // blockSizeBytes can be any arbitrary size.
                     int blockSizeBytes = rjndl.BlockSize / 8;
                     byte[] data = new byte[blockSizeBytes];
 
-
-                    // By decrypting a chunk a time,
-                    // you can save memory and
-                    // accommodate large files.
-
-                    // Start at the beginning
-                    // of the cipher text.
+                    //Fails on large files
+                    //e: works now (switched to chunking)
                     inFs.Seek(startC, SeekOrigin.Begin);
                     using (CryptoStream outStreamDecrypted = new CryptoStream(outFs, transform, CryptoStreamMode.Write))
                     {
@@ -255,7 +215,7 @@ namespace Encryption_App
             else
             {
 
-                // Display a dialog box to select a file to encrypt.
+                // wpf dialog not working, using WinForms dialog check for now
                 System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
                 openFileDialog1.InitialDirectory = SrcFolder;
                 if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -264,9 +224,11 @@ namespace Encryption_App
                     if (fName != null)
                     {
                         FileInfo fInfo = new FileInfo(fName);
-                        // Pass the file name without the path.
                         string name = fInfo.FullName;
+                        ext = System.IO.Path.GetExtension(fName);
                         EncryptFile(name);
+                        System.Windows.MessageBox.Show("The file has been successfully encrypted!");
+                        System.Diagnostics.Process.Start(EncrFolder);
                     }
                 }
             }
@@ -275,10 +237,10 @@ namespace Encryption_App
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (rsa == null)
-                System.Windows.MessageBox.Show("Key not set.");
+                System.Windows.MessageBox.Show("Key not set. Click 'Create Keys'.");
             else
             {
-                // Display a dialog box to select the encrypted file.
+                // Still need winforms for the result
                 System.Windows.Forms.OpenFileDialog openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
                 openFileDialog2.InitialDirectory = EncrFolder;
                 if (openFileDialog2.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -289,49 +251,55 @@ namespace Encryption_App
                         FileInfo fi = new FileInfo(fName);
                         string name = fi.Name;
                         DecryptFile(name);
+                        System.Windows.MessageBox.Show("The file has been successfully decrypted!");
+                        System.Diagnostics.Process.Start(DecrFolder);
                     }
                 }
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            // Save the public key created by the RSA
-            // to a file.
-            Directory.CreateDirectory(EncrFolder);
-            StreamWriter sw = new StreamWriter(PubKeyFile, false);
-            sw.Write(rsa.ToXmlString(false));
-            sw.Close();
-        }
+        //IMPLEMENT THESE LINES AFTER BETTER RESEARCH!!!
+    
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            StreamReader sr = new StreamReader(PubKeyFile);
-            cspp.KeyContainerName = keyName;
-            rsa = new RSACryptoServiceProvider(cspp);
-            string keytxt = sr.ReadToEnd();
-            rsa.FromXmlString(keytxt);
-            rsa.PersistKeyInCsp = true;
-            if (rsa.PublicOnly == true)
-                label1.Content = "Key: " + cspp.KeyContainerName + " - Public Only";
-            else
-                label1.Content = "Key: " + cspp.KeyContainerName + " - Full Key Pair";
-            sr.Close();
-        }
+        //private void Button_Click_3(object sender, RoutedEventArgs e)
+        //{
+        //    // Save the public key created by the RSA
+        //    // to a file.
+        //    Directory.CreateDirectory(EncrFolder);
+        //    StreamWriter sw = new StreamWriter(PubKeyFile, false);
+        //    sw.Write(rsa.ToXmlString(false));
+        //    sw.Close();
+        //}
 
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            cspp.KeyContainerName = keyName;
+        //private void Button_Click_4(object sender, RoutedEventArgs e)
+        //{
+        //    StreamReader sr = new StreamReader(PubKeyFile);
+        //    cspp.KeyContainerName = keyName;
+        //    rsa = new RSACryptoServiceProvider(cspp);
+        //    string keytxt = sr.ReadToEnd();
+        //    rsa.FromXmlString(keytxt);
+        //    rsa.PersistKeyInCsp = true;
+        //    if (rsa.PublicOnly == true)
+        //        label1.Content = "Key: " + cspp.KeyContainerName + " - Public Only";
+        //    else
+        //        label1.Content = "Key: " + cspp.KeyContainerName + " - Full Key Pair";
+        //    sr.Close();
+        //}
 
-            rsa = new RSACryptoServiceProvider(cspp);
-            rsa.PersistKeyInCsp = true;
 
-            if (rsa.PublicOnly == true)
-                label1.Content = "Key: " + cspp.KeyContainerName + " - Public Only";
-            else
-                label1.Content = "Key: " + cspp.KeyContainerName + " - Full Key Pair";
+        //private void Button_Click_5(object sender, RoutedEventArgs e)
+        //{
+        //    cspp.KeyContainerName = keyName;
 
-        }
+        //    rsa = new RSACryptoServiceProvider(cspp);
+        //    rsa.PersistKeyInCsp = true;
+
+        //    if (rsa.PublicOnly == true)
+        //        label1.Content = "Key: " + cspp.KeyContainerName + " - Public Only";
+        //    else
+        //        label1.Content = "Key: " + cspp.KeyContainerName + " - Full Key Pair";
+
+        //}
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
